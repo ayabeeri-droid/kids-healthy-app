@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Read(//c/Users/MAX/AppData/Roaming/**)",
+      "Read(//c/Program Files/**)",
+      "Bash(cmd /c \"node --version\")",
+      "Bash(cmd /c \"npm --version\")",
+      "Read(//c/Users/MAX/AppData/Local/Programs//**)",
+      "Read(//c/Users/MAX/**)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls C:/Users/MAX/Downloads/claude/node_modules/.bin/vite*)"
+    ]
+  }
+}
