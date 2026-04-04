@@ -1,7 +1,6 @@
-import { REWARDS } from '../hooks/useGameState'
-
 function Shop({ gameState, notifications }) {
-  const { state, buyReward } = gameState
+  const { state, buyReward, getEffectiveRewards } = gameState
+  const REWARDS = getEffectiveRewards()
   const { showModal, showToast, spawnConfetti } = notifications
 
   function handleBuyReward(reward) {

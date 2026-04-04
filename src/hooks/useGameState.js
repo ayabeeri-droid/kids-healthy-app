@@ -10,7 +10,8 @@ export const TASKS = [
   { id: 'read',         emoji: '📚', name: 'קראתי ספר',              desc: '20 דקות קריאה לפחות',              coins: 8,  color: 'var(--blue-light)', iconBg: '#2563EB' },
   { id: 'puzzle',       emoji: '🧩', name: 'פתרתי חידה/פאזל',       desc: 'אתגרתי את המוח שלי!',              coins: 7,  color: '#EDE9FE',           iconBg: '#7C3AED' },
   { id: 'exercise',     emoji: '🏃', name: 'התאמנתי',                desc: '30 דקות פעילות גופנית',            coins: 10, color: '#F0FDF4',           iconBg: '#0F9E7B' },
-  { id: 'no-screen',    emoji: '📵', name: 'שעה ללא מסך',           desc: 'שעה שלמה בלי טלפון/טלוויזיה',     coins: 8,  color: '#FDF2F8',           iconBg: '#EC4899' },
+  { id: 'no-screen',    emoji: '📵', name: 'הייתי פחות משעה היום במסך', desc: 'פחות מסך = יותר חיים!',           coins: 8,  color: '#FDF2F8',           iconBg: '#EC4899' },
+  { id: 'homework',     emoji: '✏️', name: 'הכנתי את כל שיעורי הבית', desc: 'סיימתי את כל המטלות להיום',       coins: 10, color: 'var(--blue-light)', iconBg: '#2563EB' },
   { id: 'chores',       emoji: '🧹', name: 'עזרתי בבית',             desc: 'סייעתי בסידור/ניקיון',             coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
   { id: 'grandparents', emoji: '📞', name: 'התקשרתי לסבא/סבתא',    desc: 'שיחה חמה עם המשפחה',              coins: 10, color: '#FDF2F8',           iconBg: '#DB2777' },
   { id: 'creative',     emoji: '🎨', name: 'יצרתי משהו יצירתי',     desc: 'ציור, כתיבה, נגינה...',            coins: 7,  color: '#EDE9FE',           iconBg: '#8B5CF6' },
@@ -77,11 +78,12 @@ function applyNewDayCheck(s) {
 export function useGameState() {
   const [state, setState] = useState(DEFAULT_STATE)
   const [goalSettings, setGoalSettings] = useState({})
+  const [rewardSettings, setRewardSettings] = useState({})
   const [parentPin, setParentPin] = useState('1234')
 
   // Keep a ref so async Supabase callbacks always see latest values
-  const latestRef = useRef({ state, goalSettings, parentPin })
-  useEffect(() => { latestRef.current = { state, goalSettings, parentPin } }, [state, goalSettings, parentPin])
+  const latestRef = useRef({ state, goalSettings, rewardSettings, parentPin })
+  useEffect(() => { latestRef.current = { state, goalSettings, rewardSettings, parentPin } }, [state, goalSettings, rewardSettings, parentPin])
 
   // ── Bootstrap ──────────────────────────────────────────────────────────────
 
@@ -100,10 +102,14 @@ export function useGameState() {
     localStorage.setItem('hero-app', JSON.stringify(initial))
     setState(initial)
 
-    // 4. Load goal settings & pin
+    // 4. Load goal settings, reward settings & pin
     const savedGoals = localStorage.getItem('hero-goals')
     if (savedGoals) {
       try { setGoalSettings(JSON.parse(savedGoals)) } catch (_) { /* ignore */ }
+    }
+    const savedRewards = localStorage.getItem('hero-rewards')
+    if (savedRewards) {
+      try { setRewardSettings(JSON.parse(savedRewards)) } catch (_) { /* ignore */ }
     }
     const savedPin = localStorage.getItem('hero-pin')
     if (savedPin) setParentPin(savedPin)
@@ -118,7 +124,7 @@ export function useGameState() {
     if (!supabase) return
     const timer = setTimeout(() => syncToSupabase(), 1000)
     return () => clearTimeout(timer)
-  }, [state, goalSettings, parentPin]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [state, goalSettings, rewardSettings, parentPin]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function loadFromSupabase() {
     if (!supabase) return
@@ -246,9 +252,11 @@ export function useGameState() {
     const fresh = { ...DEFAULT_STATE, lastDay: new Date().toDateString() }
     setState(fresh)
     setGoalSettings({})
+    setRewardSettings({})
     setParentPin('1234')
     localStorage.removeItem('hero-app')
     localStorage.removeItem('hero-goals')
+    localStorage.removeItem('hero-rewards')
     localStorage.removeItem('hero-pin')
     persist(fresh)
   }
@@ -256,6 +264,11 @@ export function useGameState() {
   function saveGoalSettings(settings) {
     setGoalSettings(settings)
     localStorage.setItem('hero-goals', JSON.stringify(settings))
+  }
+
+  function saveRewardSettings(settings) {
+    setRewardSettings(settings)
+    localStorage.setItem('hero-rewards', JSON.stringify(settings))
   }
 
   function changeParentPin(pin) {
@@ -275,11 +288,24 @@ export function useGameState() {
       })
   }
 
+  function getEffectiveRewards() {
+    return REWARDS
+      .filter(r => {
+        const cfg = rewardSettings[r.id]
+        return !cfg || cfg.enabled !== false
+      })
+      .map(r => {
+        const cfg = rewardSettings[r.id]
+        return cfg ? { ...r, name: cfg.name ?? r.name, cost: cfg.cost ?? r.cost } : r
+      })
+  }
+
   const level = Math.floor((state.totalCoins || 0) / 50) + 1
 
   return {
     state,
     goalSettings,
+    rewardSettings,
     parentPin,
     level,
     completeTask,
@@ -289,7 +315,9 @@ export function useGameState() {
     resetDay,
     resetAll,
     saveGoalSettings,
+    saveRewardSettings,
     changeParentPin,
     getEffectiveTasks,
+    getEffectiveRewards,
   }
 }

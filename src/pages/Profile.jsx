@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { TASKS } from '../hooks/useGameState'
+import { TASKS, REWARDS } from '../hooks/useGameState'
 
 const AVATARS = ['😎', '🦸', '🐱', '🦊', '🐸', '🦄', '🐼', '🤖']
 
 function Profile({ gameState, notifications }) {
   const {
-    state, level, goalSettings, parentPin,
-    saveProfile, saveGoalSettings, changeParentPin, resetDay, resetAll,
+    state, level, goalSettings, rewardSettings, parentPin,
+    saveProfile, saveGoalSettings, saveRewardSettings, changeParentPin, resetDay, resetAll,
   } = gameState
   const { showToast } = notifications
 
@@ -25,6 +25,7 @@ function Profile({ gameState, notifications }) {
   const [pinBuffer,      setPinBuffer]      = useState('')
   const [pinError,       setPinError]       = useState('')
   const [adminGoals,     setAdminGoals]     = useState({})
+  const [adminRewards,   setAdminRewards]   = useState({})
   const [newPin,         setNewPin]         = useState('')
 
   // ── Profile ────────────────────────────────────────────────────────────────
@@ -66,12 +67,22 @@ function Profile({ gameState, notifications }) {
       init[t.id] = { ...cfg }
     })
     setAdminGoals(init)
+
+    // Clone current rewardSettings
+    const initR = {}
+    REWARDS.forEach(r => {
+      const cfg = rewardSettings[r.id] || { enabled: true, name: r.name, cost: r.cost }
+      initR[r.id] = { ...cfg }
+    })
+    setAdminRewards(initR)
+
     setParentUnlocked(true)
     setPinBuffer('')
   }
 
   function lockParent() {
     handleSaveGoals()
+    handleSaveRewards()
     setParentUnlocked(false)
     showToast('🔒 אזור ההורים ננעל')
   }
@@ -93,6 +104,25 @@ function Profile({ gameState, notifications }) {
   function handleSaveGoals() {
     saveGoalSettings(adminGoals)
     showToast('✅ היעדים נשמרו!')
+  }
+
+  function handleToggleReward(id) {
+    setAdminRewards(prev => ({
+      ...prev,
+      [id]: { ...prev[id], enabled: !(prev[id]?.enabled ?? true) },
+    }))
+  }
+
+  function handleRewardField(id, field, val) {
+    setAdminRewards(prev => ({
+      ...prev,
+      [id]: { ...prev[id], [field]: field === 'cost' ? Math.max(1, parseInt(val) || 1) : val },
+    }))
+  }
+
+  function handleSaveRewards() {
+    saveRewardSettings(adminRewards)
+    showToast('✅ המתנות נשמרו!')
   }
 
   function handleChangePin() {
@@ -307,6 +337,58 @@ function Profile({ gameState, notifications }) {
             >
               💾 שמור יעדים
             </button>
+
+            {/* Rewards admin */}
+            <div style={{ borderTop: '1px solid #F3F4F6', marginTop: 14, paddingTop: 14 }}>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10, color: 'var(--purple)' }}>
+                🎁 ניהול מתנות
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+                הפעל/כבה מתנות ושנה עלות
+              </div>
+              {REWARDS.map(r => {
+                const cfg = adminRewards[r.id] ?? { enabled: true, name: r.name, cost: r.cost }
+                return (
+                  <div key={r.id} className="goal-row">
+                    <span className="goal-emoji">{r.emoji}</span>
+                    <div className="goal-info">
+                      <input
+                        style={{
+                          width: '100%', border: 'none', fontFamily: "'Rubik', sans-serif",
+                          fontSize: 13, fontWeight: 600, background: 'transparent', outline: 'none',
+                        }}
+                        value={cfg.name}
+                        onChange={e => handleRewardField(r.id, 'name', e.target.value)}
+                      />
+                    </div>
+                    <input
+                      className="goal-coins-input"
+                      type="number"
+                      min="1"
+                      max="999"
+                      value={cfg.cost}
+                      onChange={e => handleRewardField(r.id, 'cost', e.target.value)}
+                    />
+                    <span style={{ fontSize: 11, color: 'var(--gold-dark)' }}>🪙</span>
+                    <button
+                      className={`goal-toggle ${cfg.enabled ? 'on' : 'off'}`}
+                      onClick={() => handleToggleReward(r.id)}
+                    />
+                  </div>
+                )
+              })}
+              <button
+                onClick={handleSaveRewards}
+                style={{
+                  marginTop: 12, width: '100%', padding: 11, borderRadius: 12, border: 'none',
+                  background: 'linear-gradient(135deg,var(--coral),#EA580C)',
+                  color: 'white', fontFamily: "'Rubik', sans-serif",
+                  fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                }}
+              >
+                💾 שמור מתנות
+              </button>
+            </div>
 
             {/* Change PIN */}
             <div style={{ borderTop: '1px solid #F3F4F6', marginTop: 14, paddingTop: 14 }}>
