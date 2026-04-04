@@ -75,7 +75,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* App shell */}
+      {/* App shell — auto-commit hook active */}
       <div className="app">
         {currentTab === 'home' && (
           <Home
