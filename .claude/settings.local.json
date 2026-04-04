@@ -1,20 +1,5 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd \"C:/Users/MAX/Downloads/claude\" && git add -A && git diff --cached --quiet || (git commit -m \"auto: save changes\" && export PATH=\"/c/Program Files/GitHub CLI:$PATH\" && git push) 2>/dev/null || true",
-            "statusMessage": "Saving to GitHub..."
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(npm create:*)",
       "Read(//c/Users/MAX/AppData/Roaming/**)",
@@ -31,7 +16,34 @@
       "Bash(powershell.exe -Command \"winget install GitHub.cli --accept-package-agreements --accept-source-agreements\")",
       "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\")",
       "Bash(gh --version)",
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Bash(npx plugins:*)",
+      "Bash(ls /c/Users/MAX/AppData/Local/Programs/claude*)",
+      "Bash(powershell.exe -Command \"Get-Command claude -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; Get-ChildItem -Path ''C:\\\\Users\\\\MAX\\\\AppData\\\\Local'' -Recurse -Filter ''claude.exe'' -ErrorAction SilentlyContinue | Select-Object -First 5 FullName\")",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH:/c/Users/MAX/AppData/Local/Packages/Claude_pzs8sxrjxfjjc/LocalCache/Roaming/Claude/claude-code/2.1.87\")",
+      "Bash(CLAUDE_EXE=\"C:\\\\Users\\\\MAX\\\\AppData\\\\Local\\\\Packages\\\\Claude_pzs8sxrjxfjjc\\\\LocalCache\\\\Roaming\\\\Claude\\\\claude-code\\\\2.1.87\\\\claude.exe\")",
+      "Bash(powershell.exe -Command \"& ''$CLAUDE_EXE'' --version\")",
+      "Bash(CLAUDE=\"C:\\\\Users\\\\MAX\\\\AppData\\\\Local\\\\Packages\\\\Claude_pzs8sxrjxfjjc\\\\LocalCache\\\\Roaming\\\\Claude\\\\claude-code\\\\2.1.87\\\\claude.exe\")",
+      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin add vercel-plugin\")",
+      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin --help\")",
+      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin install vercel-plugin\")",
+      "Bash(powershell.exe -Command \"Start-Process ''$CLAUDE'' -ArgumentList ''plugin install vercel-plugin'' -Verb RunAs -Wait\")",
+      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin list\")"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"C:/Users/MAX/Downloads/claude\" && git add -A && git diff --cached --quiet || (git commit -m \"auto: save changes\" && export PATH=\"/c/Program Files/GitHub CLI:$PATH\" && git push) 2>/dev/null || true",
+            "statusMessage": "Saving to GitHub..."
+          }
+        ]
+      }
     ]
   }
 }
