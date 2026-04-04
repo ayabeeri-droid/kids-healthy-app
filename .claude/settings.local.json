@@ -12,7 +12,11 @@
       "Bash(npm --version)",
       "Bash(npm install:*)",
       "mcp__Claude_Preview__preview_start",
-      "Bash(ls C:/Users/MAX/Downloads/claude/node_modules/.bin/vite*)"
+      "Bash(ls C:/Users/MAX/Downloads/claude/node_modules/.bin/vite*)",
+      "Bash(powershell.exe -Command \"winget install GitHub.cli --accept-package-agreements --accept-source-agreements\")",
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\")",
+      "Bash(gh --version)",
+      "Bash(gh auth:*)"
     ]
   }
 }
