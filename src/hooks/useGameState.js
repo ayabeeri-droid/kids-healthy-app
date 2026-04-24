@@ -6,10 +6,10 @@ import { supabase } from '../lib/supabase'
 export const TASKS = [
   { id: 'eat-fruit',    emoji: '🍎', name: 'אכלתי פרי',            desc: 'פרי = ויטמינים = כוח!',            coins: 5,  color: '#FFF0E6',           iconBg: '#F97316' },
   { id: 'eat-veggies',  emoji: '🥦', name: 'אכלתי ירקות',           desc: 'ירקות נותנים אנרגיה ועוצמה',       coins: 5,  color: '#F0FDF4',           iconBg: '#16A34A' },
-  { id: 'no-junk',      emoji: '🚫', name: "לא אכלתי ג'אנק",        desc: 'נשמרתי מחטיפים לא בריאים',        coins: 8,  color: '#FFF0E6',           iconBg: '#EF4444' },
+  { id: 'no-junk',      emoji: '🚫', name: 'לא אכלתי חטיפים וממתקים וקינוחים היום', desc: 'נשמרתי מאוכל לא בריא',  coins: 8,  color: '#FFF0E6',           iconBg: '#EF4444' },
   { id: 'read',         emoji: '📚', name: 'קראתי ספר',              desc: '20 דקות קריאה לפחות',              coins: 8,  color: 'var(--blue-light)', iconBg: '#2563EB' },
   { id: 'puzzle',       emoji: '🧩', name: 'פתרתי חידה/פאזל',       desc: 'אתגרתי את המוח שלי!',              coins: 7,  color: '#EDE9FE',           iconBg: '#7C3AED' },
-  { id: 'exercise',     emoji: '🏃', name: 'התאמנתי',                desc: '30 דקות פעילות גופנית',            coins: 10, color: '#F0FDF4',           iconBg: '#0F9E7B' },
+  { id: 'exercise',     emoji: '🏃', name: 'התאמנתי היום מעל שעה',   desc: 'שעה של פעילות גופנית!',            coins: 10, color: '#F0FDF4',           iconBg: '#0F9E7B' },
   { id: 'no-screen',    emoji: '📵', name: 'הייתי פחות משעה היום במסך', desc: 'פחות מסך = יותר חיים!',           coins: 8,  color: '#FDF2F8',           iconBg: '#EC4899' },
   { id: 'homework',     emoji: '✏️', name: 'הכנתי את כל שיעורי הבית', desc: 'סיימתי את כל המטלות להיום',       coins: 10, color: 'var(--blue-light)', iconBg: '#2563EB' },
   { id: 'chores',       emoji: '🧹', name: 'עזרתי בבית',             desc: 'סייעתי בסידור/ניקיון',             coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
@@ -26,6 +26,8 @@ export const REWARDS = [
   { id: 'r6', emoji: '🎡', name: 'יציאה לפארק שעשועים',  cost: 100 },
   { id: 'r7', emoji: '🎧', name: 'אוזניות חדשות',         cost: 120 },
   { id: 'r8', emoji: '🏊', name: 'יום ספורט מגניב',       cost: 50  },
+  { id: 'r9', emoji: '👕', name: 'חולצת כדורגל',          cost: 80  },
+  { id: 'r10', emoji: '🏓', name: 'משחק פאדל',            cost: 60  },
 ]
 
 // ── Device ID (used as Supabase row key when no auth) ────────────────────────
@@ -51,6 +53,8 @@ const DEFAULT_STATE = {
   name: '',
   avatar: '😎',
   lastDay: '',
+  activityLog: [],     // [{id, taskId, emoji, name, coins, time, date}]
+  pendingApproval: [], // tasks awaiting parent approval (same shape)
 }
 
 // ── New-day check (pure, runs on the loaded state object) ─────────────────────
@@ -289,7 +293,7 @@ export function useGameState() {
   }
 
   function getEffectiveRewards() {
-    return REWARDS
+    const base = REWARDS
       .filter(r => {
         const cfg = rewardSettings[r.id]
         return !cfg || cfg.enabled !== false
@@ -298,6 +302,27 @@ export function useGameState() {
         const cfg = rewardSettings[r.id]
         return cfg ? { ...r, name: cfg.name ?? r.name, cost: cfg.cost ?? r.cost } : r
       })
+    // Append custom rewards added by parents
+    const custom = rewardSettings.__custom ?? []
+    return [...base, ...custom]
+  }
+
+  function saveCustomReward(reward) {
+    setRewardSettings(prev => {
+      const custom = prev.__custom ?? []
+      const next = { ...prev, __custom: [...custom, reward] }
+      localStorage.setItem('hero-rewards', JSON.stringify(next))
+      return next
+    })
+  }
+
+  function deleteCustomReward(id) {
+    setRewardSettings(prev => {
+      const custom = (prev.__custom ?? []).filter(r => r.id !== id)
+      const next = { ...prev, __custom: custom }
+      localStorage.setItem('hero-rewards', JSON.stringify(next))
+      return next
+    })
   }
 
   const level = Math.floor((state.totalCoins || 0) / 50) + 1
@@ -319,5 +344,7 @@ export function useGameState() {
     changeParentPin,
     getEffectiveTasks,
     getEffectiveRewards,
+    saveCustomReward,
+    deleteCustomReward,
   }
 }

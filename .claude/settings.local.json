@@ -28,7 +28,12 @@
       "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin --help\")",
       "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin install vercel-plugin\")",
       "Bash(powershell.exe -Command \"Start-Process ''$CLAUDE'' -ArgumentList ''plugin install vercel-plugin'' -Verb RunAs -Wait\")",
-      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin list\")"
+      "Bash(powershell.exe -Command \"& ''$CLAUDE'' plugin list\")",
+      "Bash(npx vercel:*)",
+      "Bash(powershell.exe -Command \"winget install Python.Python.3.12 --accept-package-agreements --accept-source-agreements\")",
+      "Bash(powershell.exe -Command \"Get-Command python -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(/c/Users/MAX/AppData/Local/Programs/Python/Python312/python.exe --version)",
+      "Bash(/c/Users/MAX/AppData/Local/Programs/Python/Python312/python.exe -m pip install -r \"C:\\\\Users\\\\MAX\\\\Downloads\\\\claude\\\\flight_agent\\\\requirements.txt\")"
     ],
     "defaultMode": "bypassPermissions"
   },

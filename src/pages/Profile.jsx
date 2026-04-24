@@ -7,6 +7,7 @@ function Profile({ gameState, notifications }) {
   const {
     state, level, goalSettings, rewardSettings, parentPin,
     saveProfile, saveGoalSettings, saveRewardSettings, changeParentPin, resetDay, resetAll,
+    saveCustomReward, deleteCustomReward, getEffectiveRewards,
   } = gameState
   const { showToast } = notifications
 
@@ -27,6 +28,9 @@ function Profile({ gameState, notifications }) {
   const [adminGoals,     setAdminGoals]     = useState({})
   const [adminRewards,   setAdminRewards]   = useState({})
   const [newPin,         setNewPin]         = useState('')
+  const [newRewardName,  setNewRewardName]  = useState('')
+  const [newRewardEmoji, setNewRewardEmoji] = useState('🎁')
+  const [newRewardCost,  setNewRewardCost]  = useState(50)
 
   // ── Profile ────────────────────────────────────────────────────────────────
 
@@ -388,6 +392,75 @@ function Profile({ gameState, notifications }) {
               >
                 💾 שמור מתנות
               </button>
+
+              {/* Custom rewards */}
+              <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid #F3F4F6' }}>
+                <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
+                  ➕ הוספת מתנה חדשה
+                </div>
+                <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+                  <input
+                    value={newRewardEmoji}
+                    onChange={e => setNewRewardEmoji(e.target.value)}
+                    style={{ width: 44, padding: '6px 4px', border: '1.5px solid #E5E7EB', borderRadius: 8, textAlign: 'center', fontSize: 18, outline: 'none' }}
+                  />
+                  <input
+                    value={newRewardName}
+                    onChange={e => setNewRewardName(e.target.value)}
+                    placeholder="שם המתנה..."
+                    style={{ flex: 1, padding: '6px 10px', border: '1.5px solid #E5E7EB', borderRadius: 8, fontFamily: "'Rubik', sans-serif", fontSize: 13, outline: 'none', direction: 'rtl' }}
+                  />
+                  <input
+                    type="number"
+                    value={newRewardCost}
+                    onChange={e => setNewRewardCost(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="goal-coins-input"
+                  />
+                  <span style={{ fontSize: 11, color: 'var(--gold-dark)', alignSelf: 'center' }}>🪙</span>
+                </div>
+                <button
+                  onClick={() => {
+                    if (!newRewardName.trim()) return
+                    saveCustomReward({
+                      id: 'custom-' + Date.now(),
+                      emoji: newRewardEmoji || '🎁',
+                      name: newRewardName.trim(),
+                      cost: newRewardCost,
+                    })
+                    setNewRewardName('')
+                    setNewRewardEmoji('🎁')
+                    setNewRewardCost(50)
+                    showToast('✅ מתנה נוספה!')
+                  }}
+                  style={{
+                    width: '100%', padding: 10, borderRadius: 10, border: 'none',
+                    background: 'var(--purple)', color: 'white',
+                    fontFamily: "'Rubik', sans-serif", fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                  }}
+                >
+                  ➕ הוסף מתנה
+                </button>
+
+                {/* List custom rewards */}
+                {(rewardSettings.__custom ?? []).length > 0 && (
+                  <div style={{ marginTop: 10 }}>
+                    <div style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>מתנות שנוספו:</div>
+                    {(rewardSettings.__custom ?? []).map(r => (
+                      <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', borderBottom: '1px solid #F3F4F6' }}>
+                        <span style={{ fontSize: 18 }}>{r.emoji}</span>
+                        <span style={{ flex: 1, fontSize: 13, fontWeight: 500 }}>{r.name}</span>
+                        <span style={{ fontSize: 12, color: 'var(--gold-dark)', fontWeight: 700 }}>🪙{r.cost}</span>
+                        <button
+                          onClick={() => { deleteCustomReward(r.id); showToast('🗑️ מתנה הוסרה') }}
+                          style={{ border: 'none', background: 'none', color: '#EF4444', fontSize: 16, cursor: 'pointer', padding: '0 4px' }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Change PIN */}
