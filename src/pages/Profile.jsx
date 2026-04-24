@@ -86,7 +86,9 @@ function Profile({ gameState, notifications }) {
   // ── Parent zone ────────────────────────────────────────────────────────────
 
   function openParent() {
-    setAdminRequireApproval(goalSettings.requireApproval === true)
+    const ra = goalSettings.requireApproval === true
+    setAdminRequireApproval(ra)
+    adminRequireApprovalRef.current = ra
     // Clone current goalSettings so edits don't mutate state
     const init = {}
     TASKS.forEach(t => {
