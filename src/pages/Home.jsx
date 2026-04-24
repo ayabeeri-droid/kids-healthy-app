@@ -111,13 +111,14 @@ function Home({ gameState, onSwitchTab, notifications }) {
         <div className="section-title">⚡ משימות היום</div>
         <div className="tasks-grid">
           {effectiveTasks.map(task => {
-            const done = state.completedTasks.includes(task.id)
+            const done    = state.completedTasks.includes(task.id)
+            const pending = !done && (state.pendingApproval || []).some(p => p.taskId === task.id)
             return (
               <div
                 key={task.id}
                 className={`task-card${done ? ' done' : ''}`}
-                style={{ background: task.color }}
-                onClick={!done ? () => handleCompleteTask(task) : undefined}
+                style={{ background: done ? task.color : pending ? '#FFF9E6' : task.color, opacity: pending ? 0.85 : 1 }}
+                onClick={!done && !pending ? () => handleCompleteTask(task) : undefined}
               >
                 <div
                   className="task-icon-wrap"
@@ -127,7 +128,9 @@ function Home({ gameState, onSwitchTab, notifications }) {
                 </div>
                 <div className="task-content">
                   <div className="task-name">{task.name}</div>
-                  <div className="task-desc">{task.desc}</div>
+                  <div className="task-desc">
+                    {pending ? '⏳ ממתין לאישור הורה' : task.desc}
+                  </div>
                 </div>
                 <div className="task-reward">🪙{task.coins}</div>
                 <div
@@ -135,10 +138,12 @@ function Home({ gameState, onSwitchTab, notifications }) {
                   style={
                     done
                       ? { background: 'var(--green)', borderColor: 'var(--green)', color: 'white' }
+                      : pending
+                      ? { background: '#F59E0B', borderColor: '#F59E0B', color: 'white', fontSize: 12 }
                       : {}
                   }
                 >
-                  {done ? '✓' : ''}
+                  {done ? '✓' : pending ? '⏳' : ''}
                 </div>
               </div>
             )
