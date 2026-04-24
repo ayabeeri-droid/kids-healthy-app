@@ -198,9 +198,41 @@ export function useGameState() {
 
   // ── Public actions ─────────────────────────────────────────────────────────
 
+  // Returns 'done' | 'pending' — Home.jsx uses this to decide which UI to show
   function completeTask(task) {
+    const requireApproval = goalSettings.requireApproval === true
+
+    if (requireApproval) {
+      setState(prev => {
+        if (prev.completedTasks.includes(task.id)) return prev
+        if ((prev.pendingApproval || []).some(p => p.taskId === task.id)) return prev
+        const entry = {
+          id:     Date.now().toString(),
+          taskId: task.id,
+          emoji:  task.emoji,
+          name:   task.name,
+          coins:  task.coins,
+          time:   new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+          date:   new Date().toDateString(),
+        }
+        const next = { ...prev, pendingApproval: [...(prev.pendingApproval || []), entry] }
+        persist(next)
+        return next
+      })
+      return 'pending'
+    }
+
     updateState(prev => {
       if (prev.completedTasks.includes(task.id)) return prev
+      const entry = {
+        id:     Date.now().toString(),
+        taskId: task.id,
+        emoji:  task.emoji,
+        name:   task.name,
+        coins:  task.coins,
+        time:   new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+        date:   new Date().toDateString(),
+      }
       return {
         ...prev,
         completedTasks: [...prev.completedTasks, task.id],
@@ -208,8 +240,10 @@ export function useGameState() {
         coins:          prev.coins + task.coins,
         totalCoins:     (prev.totalCoins || 0) + task.coins,
         lastDay:        new Date().toDateString(),
+        activityLog:    [...(prev.activityLog || []), entry].slice(-60),
       }
     })
+    return 'done'
   }
 
   // Returns true if reaching 10 glasses for the first time today (caller shows modal)
