@@ -403,6 +403,8 @@ export function useGameState() {
     saveProfile,
     resetDay,
     resetAll,
+    approveTask,
+    rejectTask,
     saveGoalSettings,
     saveRewardSettings,
     changeParentPin,
