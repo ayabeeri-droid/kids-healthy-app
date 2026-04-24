@@ -33,6 +33,7 @@ function Profile({ gameState, notifications }) {
   const [newRewardEmoji,      setNewRewardEmoji]      = useState('🎁')
   const [newRewardCost,       setNewRewardCost]       = useState(50)
   const [adminRequireApproval, setAdminRequireApproval] = useState(false)
+  const adminRequireApprovalRef = useRef(false)
 
   // Dashboard data
   const today = new Date().toDateString()
