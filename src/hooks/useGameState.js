@@ -72,6 +72,7 @@ function applyNewDayCheck(s) {
     ...s,
     completedTasks: [],
     waterGlasses: 0,
+    pendingApproval: [],
     streak: hadStreak ? (s.streak || 0) + 1 : 0,
     lastDay: today,
   }
