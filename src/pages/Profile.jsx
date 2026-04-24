@@ -29,9 +29,29 @@ function Profile({ gameState, notifications }) {
   const [adminGoals,     setAdminGoals]     = useState({})
   const [adminRewards,   setAdminRewards]   = useState({})
   const [newPin,         setNewPin]         = useState('')
-  const [newRewardName,  setNewRewardName]  = useState('')
-  const [newRewardEmoji, setNewRewardEmoji] = useState('🎁')
-  const [newRewardCost,  setNewRewardCost]  = useState(50)
+  const [newRewardName,       setNewRewardName]       = useState('')
+  const [newRewardEmoji,      setNewRewardEmoji]      = useState('🎁')
+  const [newRewardCost,       setNewRewardCost]       = useState(50)
+  const [adminRequireApproval, setAdminRequireApproval] = useState(false)
+
+  // Dashboard data
+  const today = new Date().toDateString()
+  const todayLog = useMemo(
+    () => (state.activityLog || []).filter(e => e.date === today),
+    [state.activityLog, today]
+  )
+  const historyDays = useMemo(() => {
+    const byDay = {}
+    ;(state.activityLog || []).forEach(e => {
+      if (e.date === today) return
+      if (!byDay[e.date]) byDay[e.date] = { date: e.date, entries: [], coins: 0 }
+      byDay[e.date].entries.push(e)
+      byDay[e.date].coins += e.coins
+    })
+    return Object.values(byDay)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 6)
+  }, [state.activityLog, today])
 
   // ── Profile ────────────────────────────────────────────────────────────────
 
