@@ -430,6 +430,21 @@ function Profile({ gameState, notifications }) {
               הפעל/כבה משימות ושנה כמות מטבעות
             </div>
 
+            {/* Require-approval toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FFF9E6', borderRadius: 10, padding: '10px 12px', marginBottom: 14, border: '1.5px solid #FCD34D' }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 13 }}>🔐 מצב אישור הורה</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                  כל משימה שהילד/ה מסמן/ת תחכה לאישורך לפני קבלת מטבעות
+                </div>
+              </div>
+              <button
+                onClick={() => setAdminRequireApproval(v => !v)}
+                className={`goal-toggle ${adminRequireApproval ? 'on' : 'off'}`}
+                style={{ flexShrink: 0, marginRight: 8 }}
+              />
+            </div>
+
             {/* Goal rows */}
             {TASKS.map(t => {
               const cfg = adminGoals[t.id] ?? { enabled: true, coins: t.coins }
