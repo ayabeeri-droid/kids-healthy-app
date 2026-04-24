@@ -17,9 +17,13 @@ function Home({ gameState, onSwitchTab, notifications }) {
   }
 
   function handleCompleteTask(task) {
-    completeTask(task)
-    spawnConfetti()
-    showModal(task.emoji, 'בום! 🎉', `השלמת: "${task.name}"\nקיבלת 🪙${task.coins} מטבעות!`)
+    const result = completeTask(task)
+    if (result === 'pending') {
+      showToast(`⏳ "${task.name}" ממתין לאישור הורה`)
+    } else {
+      spawnConfetti()
+      showModal(task.emoji, 'בום! 🎉', `השלמת: "${task.name}"\nקיבלת 🪙${task.coins} מטבעות!`)
+    }
   }
 
   const effectiveTasks = getEffectiveTasks()
