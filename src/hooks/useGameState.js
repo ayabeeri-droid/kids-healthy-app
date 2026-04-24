@@ -281,10 +281,39 @@ export function useGameState() {
   function resetDay() {
     updateState(prev => ({
       ...prev,
-      completedTasks: [],
-      waterGlasses:   0,
-      lastDay:        new Date().toDateString(),
+      completedTasks:  [],
+      waterGlasses:    0,
+      pendingApproval: [],
+      lastDay:         new Date().toDateString(),
     }))
+  }
+
+  function approveTask(entryId) {
+    setState(prev => {
+      const entry = (prev.pendingApproval || []).find(p => p.id === entryId)
+      if (!entry) return prev
+      const logEntry = { ...entry, date: new Date().toDateString() }
+      const next = {
+        ...prev,
+        pendingApproval: prev.pendingApproval.filter(p => p.id !== entryId),
+        completedTasks:  [...prev.completedTasks, entry.taskId],
+        totalTasks:      (prev.totalTasks || 0) + 1,
+        coins:           prev.coins + entry.coins,
+        totalCoins:      (prev.totalCoins || 0) + entry.coins,
+        lastDay:         new Date().toDateString(),
+        activityLog:     [...(prev.activityLog || []), logEntry].slice(-60),
+      }
+      persist(next)
+      return next
+    })
+  }
+
+  function rejectTask(entryId) {
+    setState(prev => {
+      const next = { ...prev, pendingApproval: prev.pendingApproval.filter(p => p.id !== entryId) }
+      persist(next)
+      return next
+    })
   }
 
   function resetAll() {
