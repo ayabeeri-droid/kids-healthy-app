@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { TASKS, REWARDS } from '../hooks/useGameState'
 
 const AVATARS = ['😎', '🦸', '🐱', '🦊', '🐸', '🦄', '🐼', '🤖']
