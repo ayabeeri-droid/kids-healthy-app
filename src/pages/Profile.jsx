@@ -131,7 +131,7 @@ function Profile({ gameState, notifications }) {
   }
 
   function handleSaveGoals() {
-    saveGoalSettings({ ...adminGoals, requireApproval: adminRequireApproval })
+    saveGoalSettings({ ...adminGoals, requireApproval: adminRequireApprovalRef.current })
     showToast('✅ היעדים נשמרו!')
   }
 
