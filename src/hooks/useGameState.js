@@ -15,6 +15,7 @@ export const TASKS = [
   { id: 'chores',       emoji: '🧹', name: 'עזרתי בבית',             desc: 'סייעתי בסידור/ניקיון',             coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
   { id: 'grandparents', emoji: '📞', name: 'התקשרתי לסבא/סבתא',    desc: 'שיחה חמה עם המשפחה',              coins: 10, color: '#FDF2F8',           iconBg: '#DB2777' },
   { id: 'creative',     emoji: '🎨', name: 'יצרתי משהו יצירתי',     desc: 'ציור, כתיבה, נגינה...',            coins: 7,  color: '#EDE9FE',           iconBg: '#8B5CF6' },
+  { id: 'no-screen-home', emoji: '🏠', name: 'נכנסתי הביתה ועשיתי משהו אחר ממסך', desc: 'בחרתי פעילות בלי מסך!', coins: 8, color: '#F0FDF4', iconBg: '#16A34A' },
 ]
 
 export const REWARDS = [
