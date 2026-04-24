@@ -442,7 +442,11 @@ function Profile({ gameState, notifications }) {
                 </div>
               </div>
               <button
-                onClick={() => setAdminRequireApproval(v => !v)}
+                onClick={() => {
+                  const next = !adminRequireApprovalRef.current
+                  adminRequireApprovalRef.current = next
+                  setAdminRequireApproval(next)
+                }}
                 className={`goal-toggle ${adminRequireApproval ? 'on' : 'off'}`}
                 style={{ flexShrink: 0, marginRight: 8 }}
               />
