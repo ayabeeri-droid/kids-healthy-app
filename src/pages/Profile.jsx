@@ -7,6 +7,7 @@ function Profile({ gameState, notifications }) {
   const {
     state, level, goalSettings, rewardSettings, parentPin,
     saveProfile, saveGoalSettings, saveRewardSettings, changeParentPin, resetDay, resetAll,
+    approveTask, rejectTask,
     saveCustomReward, deleteCustomReward, getEffectiveRewards,
   } = gameState
   const { showToast } = notifications
