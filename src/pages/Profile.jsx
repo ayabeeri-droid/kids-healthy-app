@@ -308,6 +308,110 @@ function Profile({ gameState, notifications }) {
         ) : (
           /* ── Unlocked panel ── */
           <div style={{ background: 'white', borderRadius: 18, padding: 18, boxShadow: 'var(--shadow)' }}>
+
+            {/* ── Dashboard ─────────────────────────────────────── */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--purple)', marginBottom: 10 }}>
+                📊 דשבורד פעילות
+              </div>
+
+              {/* Today summary bar */}
+              <div style={{ background: '#F8F7FF', borderRadius: 12, padding: '10px 14px', marginBottom: 10 }}>
+                <div style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
+                  היום — {new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </div>
+                <div style={{ display: 'flex', gap: 16, marginBottom: 8 }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: 'var(--purple)' }}>
+                      {state.completedTasks.length}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>משימות</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: '#2563EB' }}>
+                      {state.waterGlasses}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>כוסות מים</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: 'var(--gold-dark)' }}>
+                      {todayLog.reduce((s, e) => s + e.coins, 0)}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>🪙 מטבעות</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: '#F59E0B' }}>
+                      {(state.pendingApproval || []).length}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>ממתינים</div>
+                  </div>
+                </div>
+
+                {/* Today's task log with timestamps */}
+                {todayLog.length > 0 ? (
+                  <div style={{ borderTop: '1px solid #EDE9FE', paddingTop: 8 }}>
+                    {todayLog.map(entry => (
+                      <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 0', fontSize: 12 }}>
+                        <span>{entry.emoji}</span>
+                        <span style={{ flex: 1 }}>{entry.name}</span>
+                        <span style={{ color: 'var(--text-muted)', direction: 'ltr', fontVariantNumeric: 'tabular-nums' }}>{entry.time}</span>
+                        <span style={{ color: 'var(--gold-dark)', fontWeight: 700 }}>+{entry.coins}🪙</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid #EDE9FE', paddingTop: 8 }}>
+                    לא הושלמו משימות עדיין היום
+                  </div>
+                )}
+              </div>
+
+              {/* 7-day history */}
+              {historyDays.length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>
+                    היסטוריה
+                  </div>
+                  {historyDays.map(day => (
+                    <div key={day.date} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 0', borderBottom: '1px solid #F3F4F6', fontSize: 12 }}>
+                      <span style={{ flex: 1, color: 'var(--text-muted)' }}>
+                        {new Date(day.date).toLocaleDateString('he-IL', { weekday: 'short', day: 'numeric', month: 'numeric' })}
+                      </span>
+                      <span style={{ fontWeight: 600 }}>✅ {day.entries.length}</span>
+                      <span style={{ color: 'var(--gold-dark)', fontWeight: 700 }}>🪙{day.coins}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── Pending approvals ─────────────────────────────── */}
+            {(state.pendingApproval || []).length > 0 && (
+              <div style={{ background: '#FFFBEB', border: '1.5px solid #FCD34D', borderRadius: 12, padding: 12, marginBottom: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#92400E', marginBottom: 8 }}>
+                  ⏳ ממתינים לאישורך ({state.pendingApproval.length})
+                </div>
+                {state.pendingApproval.map(entry => (
+                  <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 0', borderBottom: '1px solid #FDE68A' }}>
+                    <span style={{ fontSize: 18 }}>{entry.emoji}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{entry.name}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', direction: 'ltr' }}>{entry.time}</div>
+                    </div>
+                    <span style={{ fontSize: 12, color: 'var(--gold-dark)', fontWeight: 700 }}>+{entry.coins}🪙</span>
+                    <button
+                      onClick={() => { approveTask(entry.id); showToast('✅ אושר!') }}
+                      style={{ border: 'none', background: '#16A34A', color: 'white', borderRadius: 8, padding: '4px 10px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
+                    >✓</button>
+                    <button
+                      onClick={() => { rejectTask(entry.id); showToast('❌ נדחה') }}
+                      style={{ border: 'none', background: '#EF4444', color: 'white', borderRadius: 8, padding: '4px 10px', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
+                    >✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Header row */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--purple)' }}>⚙️ יעדים יומיים</div>
