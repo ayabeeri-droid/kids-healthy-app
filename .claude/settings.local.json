@@ -34,7 +34,9 @@
       "Bash(powershell.exe -Command \"Get-Command python -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
       "Bash(/c/Users/MAX/AppData/Local/Programs/Python/Python312/python.exe --version)",
       "Bash(/c/Users/MAX/AppData/Local/Programs/Python/Python312/python.exe -m pip install -r \"C:\\\\Users\\\\MAX\\\\Downloads\\\\claude\\\\flight_agent\\\\requirements.txt\")",
-      "mcp__Claude_in_Chrome__tabs_context_mcp"
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(gh api:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d[0].get\\('environment_url',''\\), d[0].get\\('target_url',''\\), d[0].get\\('state',''\\)\\)\")"
     ],
     "defaultMode": "bypassPermissions"
   },
