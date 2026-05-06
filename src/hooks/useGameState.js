@@ -4,18 +4,22 @@ import { supabase } from '../lib/supabase'
 // ── Static data ───────────────────────────────────────────────────────────────
 
 export const TASKS = [
-  { id: 'eat-fruit',    emoji: '🍎', name: 'אכלתי פרי',            desc: 'פרי = ויטמינים = כוח!',            coins: 5,  color: '#FFF0E6',           iconBg: '#F97316' },
-  { id: 'eat-veggies',  emoji: '🥦', name: 'אכלתי ירקות',           desc: 'ירקות נותנים אנרגיה ועוצמה',       coins: 5,  color: '#F0FDF4',           iconBg: '#16A34A' },
-  { id: 'no-junk',      emoji: '🚫', name: 'לא אכלתי חטיפים וממתקים וקינוחים היום', desc: 'נשמרתי מאוכל לא בריא',  coins: 8,  color: '#FFF0E6',           iconBg: '#EF4444' },
-  { id: 'read',         emoji: '📚', name: 'קראתי ספר',              desc: '20 דקות קריאה לפחות',              coins: 8,  color: 'var(--blue-light)', iconBg: '#2563EB' },
-  { id: 'puzzle',       emoji: '🧩', name: 'פתרתי חידה/פאזל',       desc: 'אתגרתי את המוח שלי!',              coins: 7,  color: '#EDE9FE',           iconBg: '#7C3AED' },
-  { id: 'exercise',     emoji: '🏃', name: 'התאמנתי היום מעל שעה',   desc: 'שעה של פעילות גופנית!',            coins: 10, color: '#F0FDF4',           iconBg: '#0F9E7B' },
-  { id: 'no-screen',    emoji: '📵', name: 'הייתי פחות משעה היום במסך', desc: 'פחות מסך = יותר חיים!',           coins: 8,  color: '#FDF2F8',           iconBg: '#EC4899' },
-  { id: 'homework',     emoji: '✏️', name: 'הכנתי את כל שיעורי הבית', desc: 'סיימתי את כל המטלות להיום',       coins: 10, color: 'var(--blue-light)', iconBg: '#2563EB' },
-  { id: 'chores',       emoji: '🧹', name: 'עזרתי בבית',             desc: 'סייעתי בסידור/ניקיון',             coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
-  { id: 'grandparents', emoji: '📞', name: 'התקשרתי לסבא/סבתא',    desc: 'שיחה חמה עם המשפחה',              coins: 10, color: '#FDF2F8',           iconBg: '#DB2777' },
-  { id: 'creative',     emoji: '🎨', name: 'יצרתי משהו יצירתי',     desc: 'ציור, כתיבה, נגינה...',            coins: 7,  color: '#EDE9FE',           iconBg: '#8B5CF6' },
-  { id: 'no-screen-home', emoji: '🏠', name: 'נכנסתי הביתה ועשיתי משהו אחר ממסך', desc: 'בחרתי פעילות בלי מסך!', coins: 8, color: '#F0FDF4', iconBg: '#16A34A' },
+  { id: 'eat-fruit',       emoji: '🍎', name: 'אכלתי פרי',                                        desc: 'פרי = ויטמינים = כוח!',               coins: 5,  color: '#FFF0E6',           iconBg: '#F97316' },
+  { id: 'eat-veggies',     emoji: '🥦', name: 'אכלתי ירקות',                                       desc: 'ירקות נותנים אנרגיה ועוצמה',          coins: 5,  color: '#F0FDF4',           iconBg: '#16A34A' },
+  { id: 'no-junk',         emoji: '🚫', name: 'לא אכלתי חטיפים וממתקים וקינוחים היום',             desc: 'נשמרתי מאוכל לא בריא',               coins: 8,  color: '#FFF0E6',           iconBg: '#EF4444' },
+  { id: 'read',            emoji: '📚', name: 'קראתי ספר',                                         desc: '20 דקות קריאה לפחות',                 coins: 8,  color: 'var(--blue-light)', iconBg: '#2563EB' },
+  { id: 'puzzle',          emoji: '🧩', name: 'פתרתי חידה/פאזל',                                   desc: 'אתגרתי את המוח שלי!',                 coins: 7,  color: '#EDE9FE',           iconBg: '#7C3AED' },
+  { id: 'exercise',        emoji: '🏃', name: 'התאמנתי היום מעל שעה',                               desc: 'שעה של פעילות גופנית!',               coins: 10, color: '#F0FDF4',           iconBg: '#0F9E7B' },
+  { id: 'no-screen',       emoji: '📵', name: 'הייתי פחות משעה היום במסך',                          desc: 'פחות מסך = יותר חיים!',               coins: 8,  color: '#FDF2F8',           iconBg: '#EC4899' },
+  { id: 'homework',        emoji: '✏️', name: 'הכנתי את כל שיעורי הבית',                            desc: 'סיימתי את כל המטלות להיום',           coins: 10, color: 'var(--blue-light)', iconBg: '#2563EB' },
+  { id: 'chores',          emoji: '🧹', name: 'עזרתי בבית',                                        desc: 'סייעתי בסידור/ניקיון',                coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
+  { id: 'grandparents',    emoji: '📞', name: 'התקשרתי לסבא/סבתא',                                 desc: 'שיחה חמה עם המשפחה',                 coins: 10, color: '#FDF2F8',           iconBg: '#DB2777' },
+  { id: 'creative',        emoji: '🎨', name: 'יצרתי משהו יצירתי',                                 desc: 'ציור, כתיבה, נגינה...',               coins: 7,  color: '#EDE9FE',           iconBg: '#8B5CF6' },
+  { id: 'no-screen-home',  emoji: '🏠', name: 'נכנסתי הביתה ועשיתי משהו אחר ממסך',                 desc: 'בחרתי פעילות בלי מסך!',              coins: 8,  color: '#F0FDF4',           iconBg: '#16A34A' },
+  { id: 'school-respect',  emoji: '🏫', name: 'התנהגתי באופן מכבד בבית הספר',                       desc: 'המורה נתנה חיזוק חיובי ⭐',           coins: 10, color: '#EDE9FE',           iconBg: '#7C3AED' },
+  { id: 'set-table',       emoji: '🍽️', name: 'הוצאתי כלים לפני ארוחת הערב',                       desc: 'עזרתי להכין את השולחן!',              coins: 5,  color: '#F0FDF4',           iconBg: '#16A34A' },
+  { id: 'clean-tv-room',   emoji: '📺', name: 'ניקיתי אחרי את חדר הטלויזיה כולל אוכל',              desc: 'שמרתי על הבית נקי!',                 coins: 7,  color: '#FFF0E6',           iconBg: '#F59E0B' },
+  { id: 'shoes-bag',       emoji: '🎒', name: 'שמתי את התיק והנעליים במקום כשבאתי הביתה',           desc: 'כל דבר במקומו!',                     coins: 5,  color: '#F0FDF4',           iconBg: '#0F9E7B' },
 ]
 
 export const REWARDS = [
@@ -49,13 +53,17 @@ const DEFAULT_STATE = {
   totalCoins: 0,
   completedTasks: [],
   waterGlasses: 0,
+  waterBottles: 0,
+  waterCoinAwarded: false,
   streak: 0,
   totalTasks: 0,
   name: '',
   avatar: '😎',
   lastDay: '',
-  activityLog: [],     // [{id, taskId, emoji, name, coins, time, date}]
-  pendingApproval: [], // tasks awaiting parent approval (same shape)
+  todayMood: null,   // { emoji, label, time }
+  moodLog: [],       // [{ emoji, label, date, time }]
+  activityLog: [],   // [{id, taskId, emoji, name, coins, time, date}]
+  pendingApproval: [],
 }
 
 // ── New-day check (pure, runs on the loaded state object) ─────────────────────
@@ -73,6 +81,9 @@ function applyNewDayCheck(s) {
     ...s,
     completedTasks: [],
     waterGlasses: 0,
+    waterBottles: 0,
+    waterCoinAwarded: false,
+    todayMood: null,
     pendingApproval: [],
     streak: hadStreak ? (s.streak || 0) + 1 : 0,
     lastDay: today,
@@ -85,7 +96,7 @@ export function useGameState() {
   const [state, setState] = useState(DEFAULT_STATE)
   const [goalSettings, setGoalSettings] = useState({})
   const [rewardSettings, setRewardSettings] = useState({})
-  const [parentPin, setParentPin] = useState('1234')
+  const [parentPin, setParentPin] = useState('7606')
 
   // Keep a ref so async Supabase callbacks always see latest values
   const latestRef = useRef({ state, goalSettings, rewardSettings, parentPin })
@@ -247,28 +258,49 @@ export function useGameState() {
     return 'done'
   }
 
-  // Returns true if reaching 10 glasses for the first time today (caller shows modal)
+  function _checkWaterReward(prev, newBottles, newGlasses) {
+    if (prev.waterCoinAwarded) return {}
+    if (newBottles >= 5 && newGlasses >= 4) {
+      return { coins: prev.coins + 10, totalCoins: (prev.totalCoins || 0) + 10, waterCoinAwarded: true }
+    }
+    return {}
+  }
+
   function toggleGlass(index) {
-    let waterCompleted = false
+    let coinAwarded = false
     setState(prev => {
-      const wasComplete = prev.waterGlasses >= 10
-      const newWater = index < prev.waterGlasses ? index : index + 1
-      const nowComplete = newWater >= 10 && !wasComplete
-
-      if (nowComplete) waterCompleted = true
-
-      const next = {
-        ...prev,
-        waterGlasses: newWater,
-        ...(nowComplete && {
-          coins:      prev.coins + 10,
-          totalCoins: (prev.totalCoins || 0) + 10,
-        }),
-      }
+      const newGlasses = index < prev.waterGlasses ? index : index + 1
+      const reward = _checkWaterReward(prev, prev.waterBottles, newGlasses)
+      if (reward.waterCoinAwarded) coinAwarded = true
+      const next = { ...prev, waterGlasses: newGlasses, ...reward }
       persist(next)
       return next
     })
-    return waterCompleted
+    return coinAwarded
+  }
+
+  function toggleBottle(index) {
+    let coinAwarded = false
+    setState(prev => {
+      const newBottles = index < prev.waterBottles ? index : index + 1
+      const reward = _checkWaterReward(prev, newBottles, prev.waterGlasses)
+      if (reward.waterCoinAwarded) coinAwarded = true
+      const next = { ...prev, waterBottles: newBottles, ...reward }
+      persist(next)
+      return next
+    })
+    return coinAwarded
+  }
+
+  function setMood(mood) {
+    updateState(prev => {
+      const entry = { ...mood, date: new Date().toDateString(), time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) }
+      return {
+        ...prev,
+        todayMood: entry,
+        moodLog: [...(prev.moodLog || []), entry].slice(-90),
+      }
+    })
   }
 
   function buyReward(reward) {
@@ -282,10 +314,13 @@ export function useGameState() {
   function resetDay() {
     updateState(prev => ({
       ...prev,
-      completedTasks:  [],
-      waterGlasses:    0,
-      pendingApproval: [],
-      lastDay:         new Date().toDateString(),
+      completedTasks:   [],
+      waterGlasses:     0,
+      waterBottles:     0,
+      waterCoinAwarded: false,
+      todayMood:        null,
+      pendingApproval:  [],
+      lastDay:          new Date().toDateString(),
     }))
   }
 
@@ -400,6 +435,8 @@ export function useGameState() {
     level,
     completeTask,
     toggleGlass,
+    toggleBottle,
+    setMood,
     buyReward,
     saveProfile,
     resetDay,
