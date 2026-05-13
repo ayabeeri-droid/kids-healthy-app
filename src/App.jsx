@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import Home    from './pages/Home'
-import Shop    from './pages/Shop'
-import Profile from './pages/Profile'
+import Home       from './pages/Home'
+import Shop       from './pages/Shop'
+import Profile    from './pages/Profile'
+import MoodScreen from './pages/MoodScreen'
 import { useGameState } from './hooks/useGameState'
 
 function spawnConfetti() {
@@ -28,6 +29,16 @@ export default function App() {
   const [toast, setToast] = useState({ show: false, message: '' })
 
   const gameState = useGameState()
+  const { state, setMood } = gameState
+
+  // Show mood screen if child hasn't selected a mood today
+  const today = new Date().toDateString()
+  const needsMood = !state.todayMood || state.todayMood.date !== today
+
+  function handleMoodSelect(mood) {
+    setMood(mood)
+    spawnConfetti()
+  }
 
   // ── Notification helpers passed to pages ───────────────────────────────────
 
@@ -47,6 +58,16 @@ export default function App() {
   const notifications = { showModal, showToast, spawnConfetti }
 
   // ── Render ─────────────────────────────────────────────────────────────────
+
+  // Mood screen shown before anything else each day
+  if (needsMood) {
+    return (
+      <>
+        <div className="bg-decor" aria-hidden><span /><span /><span /></div>
+        <MoodScreen childName={state.name} onSelect={handleMoodSelect} />
+      </>
+    )
+  }
 
   return (
     <>
@@ -75,7 +96,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* App shell — auto-commit hook active */}
+      {/* App shell */}
       <div className="app">
         {currentTab === 'home' && (
           <Home

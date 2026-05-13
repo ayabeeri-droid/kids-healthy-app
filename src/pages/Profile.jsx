@@ -179,6 +179,17 @@ function Profile({ gameState, notifications }) {
     }
   }
 
+  // ── Table styles ───────────────────────────────────────────────────────────
+
+  const thStyle = {
+    padding: '7px 10px', textAlign: 'right', fontWeight: 700,
+    fontSize: 11, color: 'var(--purple)', whiteSpace: 'nowrap',
+  }
+  const tdStyle = {
+    padding: '6px 10px', textAlign: 'right', fontSize: 12,
+    color: '#374151', whiteSpace: 'nowrap',
+  }
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -305,7 +316,7 @@ function Profile({ gameState, notifications }) {
               <button className="pin-key del" onClick={pinBack}>⌫</button>
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 12 }}>
-              סיסמת ברירת מחדל: 1234
+              סיסמת ברירת מחדל: 7606
             </div>
           </div>
         ) : (
@@ -332,9 +343,9 @@ function Profile({ gameState, notifications }) {
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: '#2563EB' }}>
-                      {state.waterGlasses}
+                      {state.waterBottles || 0}🍼/{state.waterGlasses}🥤
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>כוסות מים</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>שתייה</div>
                   </div>
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontFamily: "'Fredoka One',cursive", fontSize: 22, color: 'var(--gold-dark)' }}>
@@ -369,11 +380,11 @@ function Profile({ gameState, notifications }) {
                 )}
               </div>
 
-              {/* 7-day history */}
+              {/* 7-day history summary */}
               {historyDays.length > 0 && (
-                <div>
+                <div style={{ marginBottom: 16 }}>
                   <div style={{ fontWeight: 600, fontSize: 12, color: 'var(--text-muted)', marginBottom: 6 }}>
-                    היסטוריה
+                    היסטוריה (7 ימים אחרונים)
                   </div>
                   {historyDays.map(day => (
                     <div key={day.date} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 0', borderBottom: '1px solid #F3F4F6', fontSize: 12 }}>
@@ -384,6 +395,78 @@ function Profile({ gameState, notifications }) {
                       <span style={{ color: 'var(--gold-dark)', fontWeight: 700 }}>🪙{day.coins}</span>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* ── Mood log table ─────────────────────────────── */}
+              {(state.moodLog || []).length > 0 && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--purple)', marginBottom: 8 }}>
+                    😊 לוג מצבי רוח
+                  </div>
+                  <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #E5E7EB' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                      <thead>
+                        <tr style={{ background: '#F8F4FF' }}>
+                          <th style={thStyle}>תאריך</th>
+                          <th style={thStyle}>שעה</th>
+                          <th style={thStyle}>מצב רוח</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...(state.moodLog || [])].reverse().map((entry, i) => (
+                          <tr key={i} style={{ borderTop: '1px solid #F3F4F6', background: i % 2 === 0 ? 'white' : '#FAFAFA' }}>
+                            <td style={tdStyle}>
+                              {new Date(entry.date).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' })}
+                            </td>
+                            <td style={{ ...tdStyle, direction: 'ltr' }}>{entry.time}</td>
+                            <td style={tdStyle}>
+                              <span style={{ fontSize: 16, marginLeft: 4 }}>{entry.emoji}</span>
+                              {entry.label}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Full activity log table ────────────────────── */}
+              {(state.activityLog || []).length > 0 && (
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--purple)', marginBottom: 8 }}>
+                    📋 לוג פעילות מלא
+                  </div>
+                  <div style={{ overflowX: 'auto', borderRadius: 10, border: '1px solid #E5E7EB' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                      <thead>
+                        <tr style={{ background: '#F8F4FF' }}>
+                          <th style={thStyle}>תאריך</th>
+                          <th style={thStyle}>שעה</th>
+                          <th style={thStyle}>משימה</th>
+                          <th style={thStyle}>🪙</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...(state.activityLog || [])].reverse().map((entry, i) => (
+                          <tr key={entry.id} style={{ borderTop: '1px solid #F3F4F6', background: i % 2 === 0 ? 'white' : '#FAFAFA' }}>
+                            <td style={tdStyle}>
+                              {new Date(entry.date).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' })}
+                            </td>
+                            <td style={{ ...tdStyle, direction: 'ltr' }}>{entry.time}</td>
+                            <td style={tdStyle}>
+                              <span style={{ marginLeft: 4 }}>{entry.emoji}</span>
+                              {entry.name}
+                            </td>
+                            <td style={{ ...tdStyle, color: 'var(--gold-dark)', fontWeight: 700, textAlign: 'center' }}>
+                              +{entry.coins}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
             </div>
