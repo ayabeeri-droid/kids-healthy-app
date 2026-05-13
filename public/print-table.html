@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>גיבור היום — טבלת 21 יום</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    direction: rtl;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: 11px;
+  }
+
+  .week-page {
+    width: 277mm;
+    min-height: 190mm;
+    padding: 8mm 10mm;
+    page-break-after: always;
+  }
+  .week-page:last-child { page-break-after: avoid; }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #7C3AED;
+  }
+  .page-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #7C3AED;
+    letter-spacing: -0.5px;
+  }
+  .week-label {
+    background: #7C3AED;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .name-line {
+    font-size: 12px;
+    color: #6B7280;
+  }
+  .name-line span {
+    display: inline-block;
+    border-bottom: 1px solid #aaa;
+    min-width: 80px;
+    margin-right: 4px;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  th, td {
+    border: 1px solid #D1D5DB;
+    text-align: center;
+    vertical-align: middle;
+    padding: 2px 1px;
+  }
+
+  /* Column widths */
+  .col-task { width: 46%; text-align: right !important; padding-right: 6px !important; }
+  .col-coins { width: 7%; }
+  .col-day { width: calc(47% / 7); }
+
+  /* Header row */
+  thead tr th {
+    background: #F3F0FF;
+    color: #5B21B6;
+    font-weight: 800;
+    font-size: 10px;
+    padding: 4px 2px;
+  }
+  thead th.col-task { font-size: 11px; }
+
+  /* Day header */
+  .day-header { font-size: 10px; font-weight: 700; line-height: 1.3; }
+  .day-date   { font-size: 8px;  color: #6B7280; font-weight: 400; }
+
+  /* Section headers */
+  .section-row td {
+    background: #7C3AED;
+    color: white;
+    font-weight: 800;
+    font-size: 11px;
+    text-align: right;
+    padding: 3px 6px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Task rows */
+  .task-row td { height: 20px; }
+  .task-row:nth-child(even) td { background: #FAFAFA; }
+  .task-row:nth-child(odd)  td { background: #FFFFFF; }
+  .task-row td.col-task {
+    font-size: 10.5px;
+    font-weight: 500;
+    text-align: right;
+    line-height: 1.3;
+  }
+  .task-emoji { margin-left: 4px; font-size: 12px; }
+
+  /* Coins */
+  .coin-badge {
+    display: inline-block;
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: 8px;
+    padding: 1px 4px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Check circle */
+  .check-cell { cursor: pointer; }
+  .circle {
+    width: 16px; height: 16px;
+    border: 1.5px solid #9CA3AF;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Water section */
+  .water-row td { background: #EFF6FF !important; }
+  .water-row td.col-task { color: #1E40AF; font-weight: 700; }
+
+  /* Total row */
+  .total-row td {
+    background: #F0FDF4 !important;
+    font-weight: 700;
+    font-size: 10px;
+    color: #166534;
+  }
+  .total-row td.col-task { color: #166534; }
+
+  /* Signature row */
+  .sign-row td {
+    background: #FFF7ED !important;
+    font-size: 9px;
+    color: #92400E;
+  }
+
+  /* Footer */
+  .page-footer {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #9CA3AF;
+  }
+
+  /* Print */
+  @media print {
+    @page { size: A4 landscape; margin: 5mm; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+    .week-page { page-break-after: always; }
+  }
+
+  /* Print button */
+  .print-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: #7C3AED;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(124,58,237,0.4);
+    z-index: 999;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  .print-btn:hover { background: #6D28D9; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ הדפס</button>
+
+<script>
+const TASKS = [
+  { emoji: '🍎', name: 'אכלתי פרי', coins: 5,  section: 'תזונה' },
+  { emoji: '🥦', name: 'אכלתי ירקות', coins: 5, section: null },
+  { emoji: '🚫', name: 'לא אכלתי חטיפים/ממתקים/קינוחים', coins: 8, section: null },
+  { emoji: '✏️', name: 'הכנתי את כל שיעורי הבית', coins: 10, section: 'לימודים ומוח' },
+  { emoji: '📚', name: 'קראתי ספר (20 דקות לפחות)', coins: 8, section: null },
+  { emoji: '🧩', name: 'פתרתי חידה / פאזל', coins: 7, section: null },
+  { emoji: '🏃', name: 'התאמנתי היום מעל שעה', coins: 10, section: 'פעילות גופנית' },
+  { emoji: '📵', name: 'פחות משעה במסך היום', coins: 8, section: null },
+  { emoji: '🏠', name: 'נכנסתי הביתה ועשיתי משהו אחר ממסך', coins: 8, section: null },
+  { emoji: '🏫', name: 'התנהגתי באופן מכבד בבית הספר', coins: 10, section: 'התנהגות' },
+  { emoji: '🍽️', name: 'הוצאתי כלים לפני ארוחת הערב', coins: 5, section: null },
+  { emoji: '📺', name: 'ניקיתי את חדר הטלויזיה כולל אוכל', coins: 7, section: null },
+  { emoji: '🎒', name: 'שמתי תיק ונעליים במקום כשבאתי הביתה', coins: 5, section: null },
+  { emoji: '🧹', name: 'עזרתי בסידור / ניקיון הבית', coins: 7, section: null },
+  { emoji: '📞', name: 'התקשרתי לסבא / סבתא', coins: 10, section: 'משפחה ויצירה' },
+  { emoji: '🎨', name: 'יצרתי משהו יצירתי', coins: 7, section: null },
+]
+
+const HE_DAYS = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳']
+
+function formatDate(d) {
+  return `${d.getDate()}/${d.getMonth()+1}`
+}
+
+function buildWeek(weekNum, startDate) {
+  const days = []
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startDate)
+    d.setDate(d.getDate() + i)
+    days.push(d)
+  }
+
+  const endDate = days[6]
+  const rangeStr = `${formatDate(days[0])} – ${formatDate(endDate)}`
+
+  let html = `
+  <div class="week-page">
+    <div class="page-header">
+      <div>
+        <div class="page-title">⭐ גיבור היום — מעקב 21 יום</div>
+        <div class="name-line">שם: <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+      </div>
+      <div style="text-align:center">
+        <div class="week-label">שבוע ${weekNum} מתוך 3</div>
+        <div style="font-size:10px;color:#6B7280;margin-top:3px">${rangeStr}</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="col-task">משימה</th>
+          <th class="col-coins">🪙</th>`
+
+  days.forEach(d => {
+    const dow = d.getDay() // 0=Sun
+    html += `<th class="col-day">
+      <div class="day-header">יום ${HE_DAYS[dow]}</div>
+      <div class="day-date">${formatDate(d)}</div>
+    </th>`
+  })
+
+  html += `</tr></thead><tbody>`
+
+  let lastSection = null
+  let totalCoins = 0
+
+  TASKS.forEach(task => {
+    if (task.section && task.section !== lastSection) {
+      lastSection = task.section
+      html += `<tr class="section-row"><td colspan="${2 + days.length}">— ${task.section} —</td></tr>`
+    }
+    totalCoins += task.coins
+    html += `<tr class="task-row">
+      <td class="col-task"><span class="task-emoji">${task.emoji}</span>${task.name}</td>
+      <td class="col-coins"><span class="coin-badge">🪙${task.coins}</span></td>`
+    days.forEach(() => {
+      html += `<td class="check-cell"><div class="circle"></div></td>`
+    })
+    html += `</tr>`
+  })
+
+  // Water section
+  html += `<tr class="section-row"><td colspan="${2 + days.length}">— שתייה —</td></tr>`
+  html += `<tr class="task-row water-row">
+    <td class="col-task"><span class="task-emoji">🍼</span>בקבוקים קטנים (מתוך 5)</td>
+    <td class="col-coins" style="font-size:8px">יעד: 5</td>`
+  days.forEach(() => { html += `<td style="font-size:9px;color:#1E40AF">___/5</td>` })
+  html += `</tr>`
+
+  html += `<tr class="task-row water-row">
+    <td class="col-task"><span class="task-emoji">🥤</span>כוסות מים (מתוך 4)</td>
+    <td class="col-coins" style="font-size:8px">יעד: 4</td>`
+  days.forEach(() => { html += `<td style="font-size:9px;color:#1E40AF">___/4</td>` })
+  html += `</tr>`
+
+  // Total coins row
+  html += `<tr class="total-row">
+    <td class="col-task">✅ סה"כ מטבעות שנצברו</td>
+    <td class="col-coins"><span class="coin-badge" style="background:#DCFCE7;color:#166534">max<br>${totalCoins}</span></td>`
+  days.forEach(() => { html += `<td>____</td>` })
+  html += `</tr>`
+
+  // Signature row
+  html += `<tr class="sign-row">
+    <td class="col-task">✍️ חתימת הורה</td>
+    <td class="col-coins"></td>`
+  days.forEach(() => { html += `<td></td>` })
+  html += `</tr>`
+
+  html += `</tbody></table>
+
+    <div class="page-footer">
+      <span>⭐ גיבור היום — כל צ'ק = מטבע = פרס!</span>
+      <span>סה"כ מקסימום לשבוע: 🪙${totalCoins * 7} מטבעות</span>
+    </div>
+  </div>`
+
+  return html
+}
+
+// Build 3 weeks starting from today
+const start = new Date()
+start.setHours(0,0,0,0)
+
+let output = ''
+for (let w = 0; w < 3; w++) {
+  const weekStart = new Date(start)
+  weekStart.setDate(start.getDate() + w * 7)
+  output += buildWeek(w + 1, weekStart)
+}
+
+document.body.insertAdjacentHTML('beforeend', output)
+</script>
+
+</body>
+</html>
